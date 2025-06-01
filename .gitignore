@@ -11,4 +11,4 @@ wheels/
 
 # blendify safety
 config.py
-tracklist.json
+*.json
