@@ -55,6 +55,52 @@ class PlaylistDB:
     def all(self) -> dict[str, list[str]]:
         return self._db
     
+class RequestHistory:
+    def __init__(self, path: str = "request_history.json") -> None:
+        self.path = Path(path)
+        self._db: dict[str, list[str]] = {"requests": []}
+        self.load()
+
+    def load(self) -> None:
+        try:
+            with self.path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+                # Validate structure
+                if isinstance(data, dict) and "requests" in data and isinstance(data["requests"], list):
+                    self._db = data
+                else:
+                    self._db = {"requests": []}
+                    self.save()
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._db = {"requests": []}
+            self.save()
+
+    def save(self) -> None:
+        with self.path.open("w", encoding="utf-8") as f:
+            json.dump(self._db, f, ensure_ascii=False, indent=4)
+
+    def add(self, request: str) -> None:
+        if request not in self._db["requests"]:
+            self._db["requests"].append(request)
+            self.save()
+
+    def remove(self, request: str) -> bool:
+        if request in self._db["requests"]:
+            self._db["requests"].remove(request)
+            self.save()
+            return True
+        return False
+
+    def __contains__(self, request: str) -> bool:
+        return request in self._db["requests"]
+
+    def get_all(self) -> list[str]:
+        return list(self._db["requests"])
+
+    def clear(self) -> None:
+        self._db["requests"] = []
+        self.save()
+    
 class SongDB:
     def __init__(self, path: str = "song_db.json") -> None:
         self.path = Path(path)

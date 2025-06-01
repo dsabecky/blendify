@@ -14,7 +14,7 @@ import random
 
 # blendify specifics
 import config
-from classes import PlaylistDB, SongDB
+from classes import PlaylistDB, SongDB, RequestHistory
 
 
 ####################################################################
@@ -22,6 +22,7 @@ from classes import PlaylistDB, SongDB
 ####################################################################
 
 playlist_db = PlaylistDB()
+request_history = RequestHistory()
 song_db = SongDB()
 
 ####################################################################
@@ -156,18 +157,22 @@ def main():
             "\nEnter a playlist theme below.\n"
             "You can add multiple themes by separating them with a pipe (|).\n"
             "Example: 'blink-182 | fortnite music | moody ambient'\n\n"
-            "> "
+            "Last five requests:\n" +
+            '\n'.join(request_history.get_all()[-5:]) +
+            "\n\n> "
         )
 
-    themes = [ item.strip() for item in prompt.split("|") if item.strip() ]
+    themes = [ item.strip() for item in prompt.split("|") if item.strip() ] # listify our themes
+    themes = sorted(themes) # sort our themes
 
     if not themes:
         print("❌ No themes provided.")
         input("Press Enter to continue…")
         return
 
-    # generate our playlist (if required)
-    try:
+    request_history.add(' | '.join(themes)) # add our request to the history
+
+    try: # generate our playlist (if required)
         playlist = generate_playlist(themes)
     except Exception as e:
         print(f"An error occurred: {e}")
