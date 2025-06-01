@@ -82,36 +82,34 @@ def invoke_chatgpt(
     return output
 
 def generate_playlist(
-    prompt: str
+    themes: list[str]
 ) -> list[str]:
     """
     Generates a fusion playlist based off a prompt.
     """
-
-    prompt_list = [ item.strip() for item in prompt.split("|") if item.strip() ]
-    list_length = len(prompt_list)
+    list_length = len(themes)
 
     sample_playlist = []
     sample_size = config.PLAYLIST_LENGTH // list_length
 
     # generate playlists based off prompt
-    for item in prompt_list:
-        item = item.lower()
-        if item not in playlist_db:
-            print(f"Generating playlist for {item}…")
+    for theme in themes:
+        theme = theme.lower()
+        if theme not in playlist_db:
+            print(f"🧠 Generating playlist for {theme}…")
             try:
-                playlist_db.add(item, invoke_chatgpt(item))
+                playlist_db.add(theme, invoke_chatgpt(theme))
             except Exception as e:
                 print(f"❌ I ran into an issue with the OpenAI API. 😢")
                 input("Press Enter to exit…")
                 return
             
         else:
-            print(f"Playlist for {item} already exists.")
+            print(f"💯 Playlist for {theme} already exists.")
 
         # generate our fusion playlist
-        print(f"🕑 Sampling {sample_size} songs from {item}…")
-        sample = random.sample(playlist_db[item], sample_size)
+        print(f"🍽️  Sampling {sample_size} songs from {theme}…")
+        sample = random.sample(playlist_db[theme], sample_size)
         for song in sample:
             if song not in sample_playlist:
                 sample_playlist.append(song)
@@ -143,9 +141,9 @@ def update_spotify_playlist(
     """
 
     try:
-        spotify.playlist_add_items(playlist_id, song_uris)
+        spotify.playlist_replace_items(playlist_id, song_uris)
     except Exception as e:
-        print(f"TODO: spotify.playlist_add_items() failed.\n{e}")
+        print(f"TODO: spotify.playlist_replace_items() failed.\n{e}")
         input("Press Enter to continue…")
         return
 
@@ -161,16 +159,23 @@ def main():
             "> "
         )
 
+    themes = [ item.strip() for item in prompt.split("|") if item.strip() ]
+
+    if not themes:
+        print("❌ No themes provided.")
+        input("Press Enter to continue…")
+        return
+
     # generate our playlist (if required)
     try:
-        playlist = generate_playlist(prompt)
+        playlist = generate_playlist(themes)
     except Exception as e:
         print(f"An error occurred: {e}")
         input("Press Enter to continue…")
         return
     
     # add songs to our database (if required)
-    print("📝 Adding song URIs to our database…")
+    print("🕑 Adding song URIs to our database…")
     song_uris = []
     for song in playlist:
         if song not in song_db:
@@ -182,9 +187,20 @@ def main():
             except Exception as e:
                 pass
 
+    # shuffle our playlist
+    print("🔀 Shuffling our playlist…")
+    random.shuffle(song_uris)
+
     # create our playlist
     print("📌 Pushing our playlist to Spotify…")
     update_spotify_playlist(spotify, config.PLAYLIST_ID, song_uris)
+
+    # update the playlist details
+    print("📝 Updating playlist details…")
+    spotify.playlist_change_details(
+        playlist_id=config.PLAYLIST_ID,
+        description=f"Generated using Blendify.\nhttps://github.com/dsabecky/blendify"
+    )
 
 if __name__ == "__main__":
     try:
