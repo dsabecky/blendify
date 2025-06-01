@@ -1,7 +1,13 @@
 # Spotify API
 SPOTIFY_CLIENT_ID = ''
 SPOTIFY_CLIENT_SECRET = ''
-SPOTIFY_REDIRECT_URI = ''
+SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:8080'
+
+# OpenAI API
+OPENAI_API_KEY = ''
+OPENAI_MODEL = 'gpt-4.1'
+OPENAI_TEMPERATURE = 1
 
 # Playlist ID
-PLAYLIST_ID = ''
+PLAYLIST_ID = '' # Your Spotify playlist ID
+PLAYLIST_LENGTH = 50 # Must be between 10 and 100
