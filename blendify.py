@@ -183,14 +183,11 @@ def main():
     print("🕑 Adding song URIs to our database…")
     song_uris = []
     for song in playlist:
-        if song not in song_db:
-            try:
-                song_uri = get_song_uri(song)
-                if song_uri:
-                    song_db.add(song, song_uri)
-                    song_uris.append(song_uri)
-            except Exception as e:
-                pass
+        song_uri = get_song_uri(song)
+        if song_uri:
+            if song not in song_db:
+                song_db.add(song, song_uri)
+            song_uris.append(song_uri)
 
     # shuffle our playlist
     print("🔀 Shuffling our playlist…")
@@ -204,7 +201,7 @@ def main():
     print("📝 Updating playlist details…")
     spotify.playlist_change_details(
         playlist_id=config.PLAYLIST_ID,
-        description=f"Generated using Blendify.\nhttps://github.com/dsabecky/blendify"
+        description=f"Generated using Blendify (https://github.com/dsabecky/blendify)"
     )
 
 if __name__ == "__main__":
