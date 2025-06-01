@@ -1,13 +1,13 @@
 # Spotify API
-SPOTIFY_CLIENT_ID = ''
-SPOTIFY_CLIENT_SECRET = ''
-SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:8080'
+SPOTIFY_CLIENT_ID = '' # https://developer.spotify.com/dashboard
+SPOTIFY_CLIENT_SECRET = '' # https://developer.spotify.com/dashboard
+SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:8080' # specified in your application (just use this one)
 
 # OpenAI API
-OPENAI_API_KEY = ''
-OPENAI_MODEL = 'gpt-4.1'
+OPENAI_API_KEY = '' # https://platform.openai.com/api-keys
+OPENAI_MODEL = 'gpt-4.1' # currently only supports non-reasoning models
 OPENAI_TEMPERATURE = 1
 
 # Playlist ID
-PLAYLIST_ID = '' # Your Spotify playlist ID
-PLAYLIST_LENGTH = 50 # Must be between 10 and 100
+PLAYLIST_ID = '' # Your Spotify playlist ID (eg: 5qfhM5R8SKZNbDFB3UwUKk)
+PLAYLIST_LENGTH = 100 # Must be between 10 and 100
