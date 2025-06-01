@@ -41,6 +41,10 @@ cd blendify
 
 Create one here: [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/create)
 
+### 4. Obtain your OpenAI API Key
+
+Obtain it here: [OpenAI API Portal](https://platform.openai.com/api-keys)
+
 ---
 
 ## ⚙️ Configuration
