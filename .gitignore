@@ -12,3 +12,4 @@ wheels/
 # blendify safety
 config.py
 *.json
+.cache
