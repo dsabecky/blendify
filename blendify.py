@@ -40,7 +40,7 @@ spotify = spotipy.Spotify(
         client_id=config.SPOTIFY_CLIENT_ID,
         client_secret=config.SPOTIFY_CLIENT_SECRET,
         redirect_uri=config.SPOTIFY_REDIRECT_URI,
-        scope="playlist-modify-public",
+        scope="playlist-modify-public playlist-modify-private",
     )
 )
 
@@ -109,7 +109,7 @@ def generate_playlist(
             print(f"💯 Playlist for {theme} already exists.")
 
         # generate our fusion playlist
-        print(f"🍽️  Sampling {sample_size} songs from {theme}…")
+        print(f"🍽️ Sampling {sample_size} songs from {theme}…")
         sample = random.sample(playlist_db[theme], sample_size)
         for song in sample:
             if song not in sample_playlist:
