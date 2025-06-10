@@ -181,7 +181,7 @@ def main():
     while not which_playlist:
         temp_which_playlist = input(
             f"\nWhich playlist would you like to use?\n"
-            f"Pick from below or specify a new one (by ID)\n\n"
+            f"Pick from below or specify a new one (by ID or share link)\n\n"
             f"Last five playlists used:\n" +
             '\n'.join(f"{playlist_name} ({playlist_id})" for playlist_id, playlist_name in last_five_playlists.items()) +
             f"\n\n[{recent_playlist}] > "
