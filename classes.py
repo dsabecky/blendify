@@ -55,6 +55,65 @@ class PlaylistDB:
     def all(self) -> dict[str, list[str]]:
         return self._db
     
+class PlaylistHistory:
+    def __init__(self, path: str = "playlist_history.json") -> None:
+        self.path = Path(path)
+        self._db: dict[str, str] = {"recent": "", "history": {}}
+        self.load()
+
+    def load(self) -> None:
+        try:
+            with self.path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+                # Validate structure
+                if isinstance(data, dict):
+                    self._db = data
+                else:
+                    self._db = {"recent": "", "history": {}}
+                    self.save()
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._db = {"recent": "", "history": {}}
+            self.save()
+
+    def save(self) -> None:
+        with self.path.open("w", encoding="utf-8") as f:
+            self._db["history"] = dict(list(self._db["history"].items())[-5:])
+            json.dump(self._db, f, ensure_ascii=False, indent=4)
+
+    def add(self, playlist_id: str, playlist_name: str) -> None:
+        if playlist_id not in self._db["history"]:
+            self._db["history"][playlist_id] = playlist_name
+            self.save()
+
+    def remove(self, playlist_id: str) -> bool:
+        if playlist_id in self._db["history"]:
+            del self._db["history"][playlist_id]
+            self.save()
+            return True
+        return False
+    
+    def update_recent(self, playlist_id: str) -> None:
+        self._db["recent"] = playlist_id
+        self.save()
+    
+    def update_history(self, playlist_id: str, playlist_name: str) -> None:
+        if playlist_id in self._db["history"]:
+            self._db["history"][playlist_id] = playlist_name
+            self.save()
+
+    def __contains__(self, playlist_id: str) -> bool:
+        return playlist_id in self._db["history"]
+
+    def get(self, key: str, default: str | None = None) -> str | None:
+        return self._db.get(key, default)
+
+    def last_five(self) -> dict[str, str]:
+        return dict(list(self._db["history"].items())[-5:])
+
+    def clear(self) -> None:
+        self._db = {"recent": "", "history": {}}
+        self.save()
+    
 class RequestHistory:
     def __init__(self, path: str = "request_history.json") -> None:
         self.path = Path(path)
