@@ -205,10 +205,11 @@ def main():
             continue
 
     # grab playlist info and provide it to the user
+    print(f"\n🎵 Using playlist: {playlist_name} ({which_playlist})\n")
     spotify_playlist = spotify.playlist(which_playlist)
     playlist_name = spotify_playlist.get('name')
     playlist_history.update_recent(which_playlist)
-    print(f"\n🎵 Using playlist: {playlist_name} ({which_playlist})\n")
+    playlist_history.update_history(which_playlist, playlist_name)
 
     # ask if we should update the playlist name
     new_name = False
