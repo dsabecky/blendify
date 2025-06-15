@@ -190,6 +190,7 @@ def main():
         if temp_which_playlist or temp_which_playlist == "": # check if we have something to work with
             if temp_which_playlist == "": # if we're using the recent playlist
                 which_playlist = recent_playlist
+                playlist_name = spotify.playlist(which_playlist).get('name')
                 break
 
             match = re.search(r'(?:playlist/)?([A-Za-z0-9]{22})', temp_which_playlist) # regex the id
