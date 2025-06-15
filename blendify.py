@@ -195,6 +195,7 @@ def main():
             match = re.search(r'(?:playlist/)?([A-Za-z0-9]{22})', temp_which_playlist) # regex the id
             if match: # if we have a valid id
                 which_playlist = match.group(1)
+                playlist_name = spotify.playlist(which_playlist).get('name')
             else: # invalid
                 clear_terminal()
                 print("❌ Invalid playlist ID.")
